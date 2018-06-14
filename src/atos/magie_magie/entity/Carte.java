@@ -6,6 +6,7 @@
 package atos.magie_magie.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,6 +31,7 @@ public class Carte implements Serializable {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Ingredient ingre;
     
     @ManyToOne

@@ -26,7 +26,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class Joueur implements Serializable {
 
-    public enum EtatJoueur {N_A_PAS_LA_MAIN, A_LA_MAIN, SOMMEIL_PROFOND, PERDU};
+    public enum EtatJoueur {N_A_PAS_LA_MAIN, A_LA_MAIN, SOMMEIL_PROFOND, PERDU, GAGNE};
     
     private static final long serialVersionUID = 1L;
     @Id
@@ -34,6 +34,7 @@ public class Joueur implements Serializable {
     private Long id;
     
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EtatJoueur etat;
     
     @Column(unique = true)
