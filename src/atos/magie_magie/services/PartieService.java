@@ -5,6 +5,7 @@
  */
 package atos.magie_magie.services;
 
+import atos.magie_magie.dao.PartieDAO;
 import atos.magie_magie.entity.Partie;
 import java.util.List;
 
@@ -14,10 +15,22 @@ import java.util.List;
  */
 public class PartieService {
     
-//    public List<Partie> listerPartiesNonDemarrees() {
-//                
-//        
-//    
-//    }
+    private PartieDAO dao = new PartieDAO();
+    
+    public List<Partie> listerPartiesNonDemarrees() { 
+        
+        return dao.ListerPartieNonDemarrees();
+    }
+
+    public Partie creerNouvelleParite(String nom) {
+        
+        Partie p = new Partie();
+        p.setNom(nom);
+        dao.ajouter(p);
+        
+        return p;
+    }
+    
+    
     
 }

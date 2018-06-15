@@ -33,6 +33,24 @@ public class Partie implements Serializable {
     @OneToMany (mappedBy = "partieActuelle")
     private List<Joueur> joueurs = new ArrayList<>();
 
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public List<Joueur> getJoueurs() {
+        return joueurs;
+    }
+
+    public void setJoueurs(List<Joueur> joueurs) {
+        this.joueurs = joueurs;
+    }
+
+    
+    
     public Long getId() {
         return id;
     }

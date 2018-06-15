@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  */
 public class MagieMagieTest {
 
-    @Test
+//    @Test
     public void LancerDB() {
         
         Persistence.createEntityManagerFactory("PU");

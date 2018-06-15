@@ -55,6 +55,74 @@ public class Joueur implements Serializable {
     @JoinColumn
     private Partie partieActuelle;
     
+    @Column (nullable = false)
+    private long ordre;
+
+    public EtatJoueur getEtat() {
+        return etat;
+    }
+
+    public void setEtat(EtatJoueur etat) {
+        this.etat = etat;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public long getNbPartiesGagnees() {
+        return nbPartiesGagnees;
+    }
+
+    public void setNbPartiesGagnees(long nbPartiesGagnees) {
+        this.nbPartiesGagnees = nbPartiesGagnees;
+    }
+
+    public long getNbPartiesJouees() {
+        return nbPartiesJouees;
+    }
+
+    public void setNbPartiesJouees(long nbPartiesJouees) {
+        this.nbPartiesJouees = nbPartiesJouees;
+    }
+
+    public List<Carte> getCartes() {
+        return cartes;
+    }
+
+    public void setCartes(List<Carte> cartes) {
+        this.cartes = cartes;
+    }
+
+    public Partie getPartieActuelle() {
+        return partieActuelle;
+    }
+
+    public void setPartieActuelle(Partie partieActuelle) {
+        this.partieActuelle = partieActuelle;
+    }
+
+    public long getOrdre() {
+        return ordre;
+    }
+
+    public void setOrdre(long ordre) {
+        this.ordre = ordre;
+    }
+    
+
     public Long getId() {
         return id;
     }

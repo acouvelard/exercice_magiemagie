@@ -17,6 +17,15 @@ import javax.persistence.Query;
  * @author Administrateur
  */
 public class PartieDAO {
+
+    public Partie rechercherParId(long idPartie) {
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        
+        return em.find(Partie.class, idPartie);
+        
+    }
+    
     
     public List<Partie> ListerPartieNonDemarrees() {
     
@@ -30,6 +39,16 @@ public class PartieDAO {
     return query.getResultList();
     
     }
+    
+    public void ajouter(Partie p){
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        
+        em.getTransaction().begin();
+        em.persist(p);
+        em.getTransaction().commit();
+    }
+
     
       
 }
