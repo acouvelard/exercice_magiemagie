@@ -4,8 +4,11 @@
  * and open the template in the editor.
  */
 
+import atos.magie_magie.entity.Joueur;
+import atos.magie_magie.entity.Partie;
 import atos.magie_magie.services.JoueurService;
 import atos.magie_magie.services.PartieService;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,17 +18,62 @@ import static org.junit.Assert.*;
  */
 public class JoueurServiceTest {
 
-    private JoueurService service = new JoueurService();
+    private JoueurService joueurService = new JoueurService();
     private PartieService partieService = new PartieService();
     
-    @Test
+//    public void passeSonTourOk() {
+//        
+//        joueurService.passeSonTour(2, 23);
+//    }
+    
+    
+//    @Test
+    public void joueurQuiALaMainOk() {
+        
+        long joueurId = joueurService.recupJoueurQuiALaMain(23).getId();
+        
+        assertEquals(2L, joueurId);
+    }
+    
+//    @Test
+    public void afficherJoueursEtCartesOK() {
+        
+        List joueurs = joueurService.afficherAutresJoueurs(23);
+        
+        System.out.println(joueurs);
+    }
+    
+//    @Test
+    public void afficherLesCartesOK() {
+        
+        List cartes = joueurService.afficherCartes(3);
+        
+        System.out.println(cartes);
+        
+    }
+    
+//    @Test
+    public void ordreJoueursOk() {
+        
+        Partie nouvellePartie = partieService.creerNouvelleParite("ordreJoueurOk2");
+        
+        joueurService.rejoindrePartie("Lili", "sorcièreLili",nouvellePartie.getId());
+        joueurService.rejoindrePartie("Lila", "sorcièreLila",nouvellePartie.getId());
+        Joueur j = joueurService.rejoindrePartie("Lilou", "sorcièreLilou",nouvellePartie.getId());
+        
+        assertEquals(3L, (long) j.getOrdre());
+        
+        
+    }
+    
+//    @Test
     public void rejoindrePartieOk() {
         
         partieService.creerNouvelleParite("partieSecrète");
         
         long partieId = partieService.creerNouvelleParite("partieSecrète").getId();
         
-        service.rejoindrePartie("Rita", "sorcièreAVerue",partieId);
+        joueurService.rejoindrePartie("Rita", "sorcièreAVerue",partieId);
         
     }
     

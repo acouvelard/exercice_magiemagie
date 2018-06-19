@@ -37,6 +37,22 @@ public class Carte implements Serializable {
     @ManyToOne
     @JoinColumn
     private Joueur joueurProprietaire;
+
+    public Ingredient getIngre() {
+        return ingre;
+    }
+
+    public void setIngre(Ingredient ingre) {
+        this.ingre = ingre;
+    }
+
+    public Joueur getJoueurProprietaire() {
+        return joueurProprietaire;
+    }
+
+    public void setJoueurProprietaire(Joueur joueurProprietaire) {
+        this.joueurProprietaire = joueurProprietaire;
+    }
     
     public Long getId() {
         return id;

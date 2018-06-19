@@ -17,6 +17,16 @@ import javax.persistence.Query;
  * @author Administrateur
  */
 public class PartieDAO {
+    
+    public long compterNbJoueur(long idPartie) {
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        
+        Query query = em.createQuery("SELECT COUNT(j) FROM Joueur j JOIN j.partieActuelle pA WHERE pA.id = :idPartie");
+        query.setParameter("idPartie", idPartie);
+        
+        return (long) query.getSingleResult();
+    }
 
     public Partie rechercherParId(long idPartie) {
         
@@ -26,6 +36,10 @@ public class PartieDAO {
         
     }
     
+    /**
+     * Liste des parties dont aucun joueur n'est à l'état A_LA_MAIN ou GAGNE.
+     * @return 
+     */
     
     public List<Partie> ListerPartieNonDemarrees() {
     

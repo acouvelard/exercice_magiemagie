@@ -4,20 +4,15 @@
  * and open the template in the editor.
  */
 
-import javax.persistence.Persistence;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  *
  * @author Administrateur
  */
-public class MagieMagieTest {
-
-    @Test
-    public void LancerDB() {
-        
-        Persistence.createEntityManagerFactory("PU");
-    }
+@RunWith(Suite.class)
+@Suite.SuiteClasses({PartieServiceTest.class, JoueurServiceTest.class, MagieMagieTest.class})
+public class AllTestsSuite {
     
 }
