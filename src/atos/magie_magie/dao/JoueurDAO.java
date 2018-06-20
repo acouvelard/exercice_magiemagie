@@ -17,6 +17,28 @@ import javax.persistence.Query;
  */
 public class JoueurDAO {
     
+    public Joueur recupereJoueurParOrdre (long idPartie, long ordre) {
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        
+        Query query = em.createQuery("SELECT j FROM Joueur j JOIN j.partieActuelle pa WHERE pa.id = :idPartie AND j.ordre = :ordre");
+        query.setParameter("idPartie", idPartie);
+        query.setParameter("ordre", ordre);
+        
+        return (Joueur) query.getSingleResult();
+    }
+    
+    public long recupererOrdreMax (long idPartie) {
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        
+        Query query = em.createQuery("SELECT MAX(j.ordre) FROM Joueur j JOIN j.partieActuelle pa WHERE pa.id = :idPartie");
+        query.setParameter("idPartie", idPartie);
+        
+        return (long) query.getSingleResult();
+        
+    }
+    
     public long recupererNbJoueurPerdu (long idPartie) {
         
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();

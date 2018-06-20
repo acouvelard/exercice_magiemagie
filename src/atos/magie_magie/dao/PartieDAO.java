@@ -46,9 +46,9 @@ public class PartieDAO {
     EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
     
     Query query = em.createQuery("SELECT p FROM Partie p"
-            + "EXCEPT SELECT p FROM Partie p JOIN p.joueurs j WHERE j.etat IN (:etat_gagne, :etat_alamain)");
+            + " EXCEPT SELECT p FROM Partie p JOIN p.joueurs j WHERE j.etat IN (:etat_gagne, :etat_alamain)");
     query.setParameter("etat_gagne", Joueur.EtatJoueur.GAGNE);
-    query.setParameter("alamain", Joueur.EtatJoueur.A_LA_MAIN);
+    query.setParameter("etat_alamain", Joueur.EtatJoueur.A_LA_MAIN);
     
     return query.getResultList();
     
