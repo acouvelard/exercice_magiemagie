@@ -4,10 +4,12 @@
  * and open the template in the editor.
  */
 
+import atos.magie_magie.entity.Carte;
 import atos.magie_magie.entity.Joueur;
 import atos.magie_magie.entity.Partie;
 import atos.magie_magie.services.JoueurService;
 import atos.magie_magie.services.PartieService;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -21,11 +23,29 @@ public class JoueurServiceTest {
     private JoueurService joueurService = new JoueurService();
     private PartieService partieService = new PartieService();
     
-//    public void passeSonTourOk() {
-//        
-//        joueurService.passeSonTour(2, 23);
-//    }
+//    @Test
+    public void sortsOk() {
+        
+        Joueur joueurVictime = joueurService.choisirJoueurVictime(17);
+
+        
+        joueurService.jeterUnSort(41, joueurVictime, 79, 81, 0);
+        
+        
+    }
     
+//    @Test
+    public void passerSonTourOk() {
+        
+        joueurService.passeSonTour(41);
+    }
+    
+    
+//    @Test
+    public void passerAuJoueurSuivantOk() {
+        
+        joueurService.joueurSuivant(23);
+    }
     
 //    @Test
     public void joueurQuiALaMainOk() {
