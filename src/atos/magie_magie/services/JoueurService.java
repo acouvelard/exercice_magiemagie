@@ -28,6 +28,13 @@ public class JoueurService {
     private PartieDAO partieDAO = new PartieDAO();
     private CarteDAO carteDAO = new CarteDAO();
     
+    public List tousLesJoueursDeLaPartie (long partieId) {
+        
+        List<Joueur> joueurs = dao.rechercheTousLesJoueursPourUnePartie(partieId);
+        
+        return joueurs;
+    }
+    
     public Joueur choisirJoueurVictime (long joueurId) {
         
         Joueur joueurVictime = dao.recupererJoueurViaId(joueurId);
@@ -51,7 +58,13 @@ public class JoueurService {
                 dao.modifier(joueurQuiALaMain);
 
             }
+            if (joueur.getCartes().size() == 0) {
+            joueur.setEtat(Joueur.EtatJoueur.PERDU);
+            dao.modifier(joueur);
         }
+        }
+        
+        
     }
     
     public void sortPhiltreDAmour (Joueur joueurVictime, Joueur joueurQuiALaMain ) {
@@ -126,13 +139,12 @@ public class JoueurService {
         
         List<Joueur> joueurs = dao.rechercheTousLesJoueursPourUnePartie(partieId);
         
-        List<List<Carte>> ListeDeCartes = new ArrayList<List<Carte>>();
         for (Joueur joueur : joueurs) {
-            List<Carte> cartes = joueur.getCartes();
-            ListeDeCartes.add(cartes);
+            if (joueur.getEtat() == Joueur.EtatJoueur.A_LA_MAIN) {
+                joueurs.remove(joueur);
+            }
         }        
-        
-        return ListeDeCartes;
+        return joueurs;
     }
     
     public void sortSommeilProfond (Joueur joueurVictime) {
@@ -166,7 +178,7 @@ public class JoueurService {
             ||(carte2.getIngre() == Carte.Ingredient.MANDRAGORE && carte1.getIngre() == Carte.Ingredient.AILE_DE_CHAUVE_SOURIE)) {
             sortSommeilProfond(joueurVictime);
         } else {
-            throw new RuntimeException("Vous n'avez pas les bonnes cartes");
+            System.out.println("Vous n'avez pas selectionné les bonnes cartes");;
         }
         
         //test si joueurVictime à encore des cartes
@@ -182,7 +194,7 @@ public class JoueurService {
         joueurQuiALaMain.getCartes().remove(carte2);
         dao.modifier(joueurQuiALaMain);
         carteDAO.supprimerCarte(carte2.getId());
-        
+
         joueurSuivant(partieId);
         
     }

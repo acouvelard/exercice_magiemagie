@@ -28,10 +28,7 @@ public class JoueurServiceTest {
         
         Joueur joueurVictime = joueurService.choisirJoueurVictime(17);
 
-        
         joueurService.jeterUnSort(41, joueurVictime, 79, 81, 0);
-        
-        
     }
     
 //    @Test
