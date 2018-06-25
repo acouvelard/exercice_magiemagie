@@ -41,7 +41,7 @@ public class PartieDAO {
      * @return 
      */
     
-    public List<Partie> ListerPartieNonDemarrees() {
+    public List<Partie> listerPartieNonDemarrees() {
     
     EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
     

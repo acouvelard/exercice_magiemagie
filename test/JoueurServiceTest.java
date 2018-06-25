@@ -26,9 +26,9 @@ public class JoueurServiceTest {
 //    @Test
     public void sortsOk() {
         
-        Joueur joueurVictime = joueurService.choisirJoueurVictime(17);
+        Joueur joueurVictime = joueurService.choisirJoueurVictime(25);
 
-        joueurService.jeterUnSort(41, joueurVictime, 79, 81, 0);
+        joueurService.jeterUnSort(43, joueurVictime, 132, 134, 0);
     }
     
 //    @Test

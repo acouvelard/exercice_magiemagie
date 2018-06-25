@@ -11,8 +11,6 @@ import atos.magie_magie.dao.PartieDAO;
 import atos.magie_magie.entity.Carte;
 import atos.magie_magie.entity.Joueur;
 import atos.magie_magie.entity.Partie;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,6 +25,13 @@ public class JoueurService {
     private JoueurDAO dao = new JoueurDAO();
     private PartieDAO partieDAO = new PartieDAO();
     private CarteDAO carteDAO = new CarteDAO();
+    
+    public List rechercherJoueurEtatPasLaMainEtSommeil(long partieId) {
+        
+        List<Joueur> joueurs = dao.rechercherJoueursPasLaMainEtSommeil(partieId);
+        
+        return joueurs;
+    }
     
     public List tousLesJoueursDeLaPartie (long partieId) {
         
@@ -44,20 +49,19 @@ public class JoueurService {
     
     public void sortInvisibilite (long partieId, Joueur joueurQuiALaMain) {
         
-        List<Joueur> joueurs = dao.rechercheTousLesJoueursPourUnePartie(partieId);
+        List<Joueur> joueurs = dao.rechercherJoueursPasLaMainEtSommeil(partieId);
         
         for (Joueur joueur : joueurs) {
-            if (joueur != joueurQuiALaMain) {
-                int r = new Random().nextInt(joueur.getCartes().size());
-                Carte cartePrise = joueur.getCartes().get(r);
-                joueur.getCartes().remove(cartePrise);
-                dao.modifier(joueur);
-                cartePrise.setJoueurProprietaire(joueurQuiALaMain);
-                carteDAO.modifierCarte(cartePrise);
-                joueurQuiALaMain.getCartes().add(cartePrise);
-                dao.modifier(joueurQuiALaMain);
+            int r = new Random().nextInt(joueur.getCartes().size());
+            Carte cartePrise = joueur.getCartes().get(r);
+            joueur.getCartes().remove(cartePrise);
+            dao.modifier(joueur);
+            cartePrise.setJoueurProprietaire(joueurQuiALaMain);
+            carteDAO.modifierCarte(cartePrise);
+            joueurQuiALaMain.getCartes().add(cartePrise);
+            dao.modifier(joueurQuiALaMain);
 
-            }
+
             if (joueur.getCartes().size() == 0) {
             joueur.setEtat(Joueur.EtatJoueur.PERDU);
             dao.modifier(joueur);
@@ -135,15 +139,10 @@ public class JoueurService {
 
     }
     
-    public List sortDivination (long partieId) {
+    public List<Joueur> sortDivination (long partieId) {
         
-        List<Joueur> joueurs = dao.rechercheTousLesJoueursPourUnePartie(partieId);
+        List<Joueur> joueurs = dao.rechercherJoueursPasLaMainEtSommeil(partieId);
         
-        for (Joueur joueur : joueurs) {
-            if (joueur.getEtat() == Joueur.EtatJoueur.A_LA_MAIN) {
-                joueurs.remove(joueur);
-            }
-        }        
         return joueurs;
     }
     
@@ -153,13 +152,15 @@ public class JoueurService {
         dao.modifier(joueurVictime);
         
     }
-    //TODO verifier si les cartes choisie sont en possetion du joueur
-    public void jeterUnSort (long partieId, Joueur joueurVictime, long idCarte1, long idCarte2, long carteEchangeeId ) {
+
+    public List<Joueur> jeterUnSort (long partieId, Joueur joueurVictime, long idCarte1, long idCarte2, long carteEchangeeId ) {
         
         Joueur joueurQuiALaMain = dao.recupererJoueurQuiALaMain(partieId);
        
         Carte carte1 = carteDAO.recupererCarteViaId(idCarte1);
         Carte carte2 = carteDAO.recupererCarteViaId(idCarte2);
+
+        List<Joueur> listJoueurs = null;
         
         //cartes correspondent à celle d'un sort
         if ((carte1.getIngre() == Carte.Ingredient.CORNE_DE_LICORNE && carte2.getIngre() == Carte.Ingredient.BAVE_DE_CRAPAUX)
@@ -173,12 +174,12 @@ public class JoueurService {
             sortHypnose(joueurVictime, joueurQuiALaMain, carteEchangeeId);
         } else if ((carte1.getIngre() == Carte.Ingredient.LAPIS_LAZULI && carte2.getIngre() == Carte.Ingredient.AILE_DE_CHAUVE_SOURIE )
             || (carte2.getIngre() == Carte.Ingredient.LAPIS_LAZULI && carte1.getIngre() == Carte.Ingredient.AILE_DE_CHAUVE_SOURIE )) {
-            sortDivination(partieId);
+            listJoueurs = sortDivination(partieId);
         } else if ((carte1.getIngre() == Carte.Ingredient.MANDRAGORE && carte2.getIngre() == Carte.Ingredient.AILE_DE_CHAUVE_SOURIE)
             ||(carte2.getIngre() == Carte.Ingredient.MANDRAGORE && carte1.getIngre() == Carte.Ingredient.AILE_DE_CHAUVE_SOURIE)) {
             sortSommeilProfond(joueurVictime);
         } else {
-            System.out.println("Vous n'avez pas selectionné les bonnes cartes");;
+            System.out.println("Vous n'avez pas selectionné les bonnes cartes. Vous les avez perdues.");;
         }
         
         //test si joueurVictime à encore des cartes
@@ -194,9 +195,12 @@ public class JoueurService {
         joueurQuiALaMain.getCartes().remove(carte2);
         dao.modifier(joueurQuiALaMain);
         carteDAO.supprimerCarte(carte2.getId());
+        
 
         joueurSuivant(partieId);
         
+        return listJoueurs;
+
     }
 
     public void passeSonTour(long partieId) {

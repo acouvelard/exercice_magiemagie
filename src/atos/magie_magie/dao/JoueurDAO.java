@@ -17,6 +17,24 @@ import javax.persistence.Query;
  */
 public class JoueurDAO {
     
+    /**
+     *  Tous les joueurs d'une partie qui sont en état n'a pas la main ou sommeil profond
+     * @param idPartie
+     * @return
+     */
+    public  List<Joueur> rechercherJoueursPasLaMainEtSommeil (long idPartie) {
+        
+        EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
+        
+        Query q = em.createQuery("SELECT j FROM Joueur j JOIN j.partieActuelle pa "
+                + "WHERE pa.id = :idPartie AND j.etat = :etatPasLaMain AND j.etat = :etatSommeil");
+        q.setParameter("idPartie", idPartie);
+        q.setParameter("etatPasLaMain", Joueur.EtatJoueur.N_A_PAS_LA_MAIN);
+        q.setParameter("etatSommeil", Joueur.EtatJoueur.SOMMEIL_PROFOND);
+        
+        return q.getResultList();
+    }
+    
     public List rechercheTousLesJoueursPourUnePartie (long partieId) {
         
         EntityManager em = Persistence.createEntityManagerFactory("PU").createEntityManager();
@@ -74,7 +92,7 @@ public class JoueurDAO {
     
     
     /**
-     * 
+     * Recupère id, pseudo, avatar, etat et nombre de carte par joueur : une list dans une liste 
      * @param idPartie
      * @return recupère id, pseudo, avatar, etat et nombre de carte par joueur : une list dans une liste 
      */

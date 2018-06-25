@@ -11,7 +11,6 @@ import atos.magie_magie.entity.Partie;
 import atos.magie_magie.services.CarteService;
 import atos.magie_magie.services.JoueurService;
 import atos.magie_magie.services.PartieService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,109 +24,90 @@ public class PointEntree {
     private JoueurService joueurService = new JoueurService();
     private CarteService carteService = new CarteService();
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
        
         PointEntree m = new PointEntree();
         
         m.menuPrincipal();
         
-        System.out.print("Entrer la partie à jouer : ");
-        Scanner s = new Scanner(System.in);
-        long partie = s.nextLong();
-        
-        m.jeu(partie);
     }
     
-    public void jeu(long idPartie) {
+    public Joueur jeu(long idPartie) {
         
         Scanner scann = new Scanner(System.in);
         int action;
         List<Joueur> joueurs = joueurService.tousLesJoueursDeLaPartie(idPartie);
-        Joueur joueurGagnant = null;
         
-        do {
+        //Affichage des cartes
+        System.out.println("--- Voici vos cartes ---");
+        Joueur joueurQuiALaMain = joueurService.recupJoueurQuiALaMain(idPartie);
+        List<Carte> cartes = joueurService.afficherCartes(joueurQuiALaMain.getId());
+        for (Carte carte : cartes) {
+            System.out.println(carte.getId() + ". " + carte.getIngre());
+        }
+        System.out.println("-------------------");
+        System.out.println("Effectuer une action");
+        System.out.println("1. Lancer un sort");
+        System.out.println("2. Passer son tour");
+        System.out.print("Choix de " + joueurQuiALaMain.getPseudo() + " : ");
 
-            //Affichage des cartes
-            System.out.println("--- Voici vos cartes ---");
-            Joueur joueurQuiALaMain = joueurService.recupJoueurQuiALaMain(idPartie);
-            List<Carte> cartes = joueurService.afficherCartes(joueurQuiALaMain.getId());
-            for (Carte carte : cartes) {
-                System.out.println(carte.getId() + ". " + carte.getIngre());
-            }
-            System.out.println("-------------------");
-            System.out.println("Effectuer une action");
-            System.out.println("1. Lancer un sort");
-            System.out.println("2. Passer son tour");
-            System.out.print("Choix de " + joueurQuiALaMain.getPseudo() + " : ");
+        action = scann.nextInt();
 
-            action = scann.nextInt();
-            
-            if (action == 1) { // LANCER UN SORT
-                
-                //affichage des cartes
-                for (Joueur joueur : joueurs) {
-                    if (joueur.getEtat() != Joueur.EtatJoueur.PERDU && (joueur.getEtat() != Joueur.EtatJoueur.A_LA_MAIN)) {
-                        System.out.println(joueur.getId() + " " + joueur.getPseudo() + " ( " + joueur.getCartes().size() + " cartes ) ");
-                    }
-                }
-                
-                //choisir la victime
-                System.out.print("Entrer le numeros de la victime : ");
-                Scanner numVictime = new Scanner(System.in);
-                int joueurVictimeId = numVictime.nextInt();
-                Joueur joueurVictime = joueurService.choisirJoueurVictime(joueurVictimeId);
-                
-                //Choix des deux cartes
-                
-                System.out.print("Entrer le num de la première carte : ");
-                Scanner premiereCarteChoisie = new Scanner(System.in);
-                int premiereCarteId = premiereCarteChoisie.nextInt();
-                Carte premiereCarte = carteService.recupererCarteViaId(premiereCarteId);
+        if (action == 1) { // LANCER UN SORT
 
-                
-                System.out.print("Entrer le num de la seconde carte : ");
-                Scanner secondeCarteChoisie = new Scanner(System.in);
-                int secondeCarteId = secondeCarteChoisie.nextInt();
-                Carte secondeCarte = carteService.recupererCarteViaId(secondeCarteId);
-                
-                long carteEchangeeId = 0;
-                if ((premiereCarte.getIngre() == Carte.Ingredient.BAVE_DE_CRAPAUX && secondeCarte.getIngre() == Carte.Ingredient.LAPIS_LAZULI)
-                ||(secondeCarte.getIngre() == Carte.Ingredient.BAVE_DE_CRAPAUX && premiereCarte.getIngre() == Carte.Ingredient.LAPIS_LAZULI)) {
-                    System.out.print("Entrer le num de la carte à échanger : ");
-                    Scanner carteEcgangeeChoisie = new Scanner(System.in);
-                    carteEchangeeId = carteEcgangeeChoisie.nextInt();
-                }    
-
-                joueurService.jeterUnSort(idPartie, joueurVictime, premiereCarte.getId(), secondeCarte.getId(), carteEchangeeId);
-                
-            } else if (action == 2) { //PASSER SON TOUR
-                joueurService.passeSonTour(idPartie);
-            } else {
-                System.out.println("Je n'ai pas compris !");
-            }
-
+            //affichage des cartes
             for (Joueur joueur : joueurs) {
-                if(joueur.getEtat() == Joueur.EtatJoueur.GAGNE) {
-                    joueurGagnant = joueur;
-                } 
+                if (joueur.getEtat() != Joueur.EtatJoueur.PERDU && (joueur.getEtat() != Joueur.EtatJoueur.A_LA_MAIN)) {
+                    System.out.println(joueur.getId() + " " + joueur.getPseudo() + " ( " + joueur.getCartes().size() + " cartes ) ");
+                }
             }
-        } while ( joueurGagnant == null);
-        
-        for (Joueur joueur : joueurs) {
-            joueur.setNbPartiesJouees(joueur.getNbPartiesJouees());
-            if (joueur == joueurGagnant) {
-                joueur.setNbPartiesGagnees(joueur.getNbPartiesGagnees());
+
+            //choisir la victime
+            System.out.print("Entrer le numeros de la victime : ");
+            Scanner numVictime = new Scanner(System.in);
+            int joueurVictimeId = numVictime.nextInt();
+            Joueur joueurVictime = joueurService.choisirJoueurVictime(joueurVictimeId);
+
+            //Choix des deux cartes
+            System.out.print("Entrer le num de la première carte : ");
+            Scanner premiereCarteChoisie = new Scanner(System.in);
+            int premiereCarteId = premiereCarteChoisie.nextInt();
+            Carte premiereCarte = carteService.recupererCarteViaId(premiereCarteId);
+
+
+            System.out.print("Entrer le num de la seconde carte : ");
+            Scanner secondeCarteChoisie = new Scanner(System.in);
+            int secondeCarteId = secondeCarteChoisie.nextInt();
+            Carte secondeCarte = carteService.recupererCarteViaId(secondeCarteId);
+
+            //choix d'une potentielle carte à échanger pour le sort Hypnose
+            long carteEchangeeId = 0;
+            if ((premiereCarte.getIngre() == Carte.Ingredient.BAVE_DE_CRAPAUX && secondeCarte.getIngre() == Carte.Ingredient.LAPIS_LAZULI)
+            ||(secondeCarte.getIngre() == Carte.Ingredient.BAVE_DE_CRAPAUX && premiereCarte.getIngre() == Carte.Ingredient.LAPIS_LAZULI)) {
+                System.out.print("Entrer le num de la carte à échanger : ");
+                Scanner carteEcgangeeChoisie = new Scanner(System.in);
+                carteEchangeeId = carteEcgangeeChoisie.nextInt();
+            }    
+
+            //Afficher les joueurs pour le sort Divination
+            List<Joueur> listJoueursDivination = joueurService.jeterUnSort(idPartie, joueurVictime, premiereCarte.getId(), secondeCarte.getId(), carteEchangeeId);
+            if (listJoueursDivination != null) {
+                for (Joueur joueurDivination : listJoueursDivination) {
+                    System.out.println(joueurDivination.getPseudo() + " a " + joueurDivination.getCartes().size() + " cartes");
+                }
             }
+                
+        } else if (action == 2) { //PASSER SON TOUR
+            joueurService.passeSonTour(idPartie);
+        } else {
+            System.out.println("Je n'ai pas compris !");
         }
         
-        System.err.println(" -*-*- Partie Fini ! -*-*- ");
-
-        System.err.println("La reine des sorcières est : " + joueurGagnant.getPseudo() + " !!!!");
-        
-
+        Joueur joueurWin = partieService.finDePartie(idPartie);
+        return joueurWin;
     }
     
-    public void menuPrincipal() {
+    public void menuPrincipal() throws InterruptedException {
         
         Scanner scan = new Scanner(System.in);
         String choix;
@@ -137,7 +117,6 @@ public class PointEntree {
             System.out.println("1. Lister les parties non-démarées");
             System.out.println("2. Créer une partie");
             System.out.println("3. Rejouindre une partie");
-            System.out.println("4. Démarrer une partie");
             System.out.println("Q. Quitter");
             System.out.print("Votre choix > ");
         
@@ -165,15 +144,9 @@ public class PointEntree {
                     String avatar = persoScan.nextLine();
                     System.out.print("Entrez le num de votre partie : ");
                     Long partieId = persoScan.nextLong();
-                    joueurService.rejoindrePartie(pseudo, avatar, partieId);
+                    Joueur nouveauJoueur = joueurService.rejoindrePartie(pseudo, avatar, partieId);
                     // pour un joueur par fenêtre !
-                    ecranJeu(partieId, pseudo);
-                    break;
-
-                case "4":
-                    System.out.println("Entrez le num de la partie à démarrer");
-                    Scanner partieADemarrer = new Scanner(System.in);
-                    partieService.demarrerPartie(partieADemarrer.nextLong());
+                    ecranJeu(partieId, nouveauJoueur.getId());
                     break;
 
                 case "Q":
@@ -187,23 +160,56 @@ public class PointEntree {
 
     }
 
-    private void ecranJeu(Long partieId, String pseudo) {
+    private void ecranJeu(Long partieId, long idJoueur) throws InterruptedException {
+
         //recupe id de moi-même
-       long monId = 1;
-       
-        while (true) {            
+        long monId = idJoueur;
+
+        List<Joueur> joueurs = joueurService.tousLesJoueursDeLaPartie(partieId);
+        Joueur joueurGagnant = null;
+        long joueurQuiALaMainId = 0;
+        
+        while (joueurQuiALaMainId == 0) {
             
-            // recup le joueur qui à la main
-            long joueurQuiALaMain = joueurService.recupJoueurQuiALaMain(partieId).getId();
+            //condition dans la boucle : boucle tant que partie pas démarrée (aucun joueur à l'état à la main)
+            for (Joueur joueur : joueurs) {
+                if (joueur.getEtat()== Joueur.EtatJoueur.A_LA_MAIN) {
+                    joueurQuiALaMainId = joueur.getId();
+                }
+            }
             
-            if (joueurQuiALaMain == monId) {
-                
-                //appeller la fonction qui permet de jouer !
-                jeu(partieId);
-                
+            //Menu pour démarrer la partie si plus d'un joueur
+            if (joueurs.size() == 0) {
+                System.err.println("Il n'y a pas assez de joueurs pour rejoindre la partie !");
+            } else {
+                Scanner s = new Scanner(System.in);
+                System.out.print("Entre O pour démmarer la partie");
+                String choix2 = s.nextLine();
+                switch (choix2) {
+                    case "O":
+                        partieService.demarrerPartie(partieId);
+                        break;
+                    default:
+                        System.out.println("Raté !");
+                        break;
+                }
             }
         }
-       
+
+                
+        //Tours de jeux tant qu'il n'y a pas de joueur gagants
+        while (joueurGagnant == null) {            
+            if (joueurQuiALaMainId == monId) {
+                joueurGagnant = jeu(partieId);
+            } else {
+                Thread.sleep(1000);
+            }
+        }
+   
+        System.err.println("****** PARTIE FINIE ******");
+        
+        System.err.println("La reine des sorcières est " + joueurGagnant.getPseudo() + " !!!!!!");
+        
     }
     
 }

@@ -23,13 +23,32 @@ public class PartieService {
     private PartieDAO dao = new PartieDAO();
     private JoueurDAO joueurDAO = new JoueurDAO();
     private CarteDAO carteDAO = new CarteDAO();
+    
+    public Joueur finDePartie (long partieId) {
+        List<Joueur> joueurs = joueurDAO.rechercheTousLesJoueursPourUnePartie(partieId);
+        
+        List<Joueur> joueursEnAttente = joueurDAO.rechercherJoueursPasLaMainEtSommeil(partieId);
+        
+        Joueur joueurGagnant = null;
+        
+        if (joueursEnAttente.size() == 0) {
+            for (Joueur joueur : joueursEnAttente) {
+                joueur.setNbPartiesJouees(joueur.getNbPartiesJouees() + 1);
+                if (joueur.getEtat() == Joueur.EtatJoueur.A_LA_MAIN) {
+                    joueur.setEtat(Joueur.EtatJoueur.GAGNE);
+                    joueur.setNbPartiesGagnees(joueur.getNbPartiesGagnees() + 1);
+                    joueurGagnant = joueur;
+                }
+                joueurDAO.modifier(joueur);
+            }
+        }
+        return joueurGagnant;
+    }
 
     public Partie demarrerPartie(long partieId) {
 
         Partie partieQuiDemarre = dao.rechercherParId(partieId);
 
-        List partieJoueur = partieQuiDemarre.getJoueurs();
-        
         long nbJoueur = dao.compterNbJoueur(partieId);
         if (nbJoueur < 1) {
             throw new RuntimeException("Il n'y a pas assez de joueur pour commencer la partie !");
@@ -59,7 +78,7 @@ public class PartieService {
 
     public List<Partie> listerPartiesNonDemarrees() {
 
-        return dao.ListerPartieNonDemarrees();
+        return dao.listerPartieNonDemarrees();
     }
 
     public Partie creerNouvelleParite(String nom) {
