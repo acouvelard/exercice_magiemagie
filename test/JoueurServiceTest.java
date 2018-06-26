@@ -55,7 +55,7 @@ public class JoueurServiceTest {
 //    @Test
     public void afficherJoueursEtCartesOK() {
         
-        List joueurs = joueurService.afficherAutresJoueurs(23);
+        List joueurs = joueurService.afficherInfosSurLesJoueursPourUnePartie(23);
         
         System.out.println(joueurs);
     }

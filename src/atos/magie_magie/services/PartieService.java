@@ -49,10 +49,10 @@ public class PartieService {
 
         Partie partieQuiDemarre = dao.rechercherParId(partieId);
 
-        long nbJoueur = dao.compterNbJoueur(partieId);
-        if (nbJoueur < 1) {
-            throw new RuntimeException("Il n'y a pas assez de joueur pour commencer la partie !");
-        }
+//        long nbJoueur = dao.compterNbJoueur(partieId);
+//        if (nbJoueur < 1) {
+//            throw new RuntimeException("Il n'y a pas assez de joueur pour commencer la partie !");
+//        }
 
         for (Joueur joueur : partieQuiDemarre.getJoueurs()) {
 

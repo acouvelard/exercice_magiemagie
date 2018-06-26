@@ -267,7 +267,7 @@ public class JoueurService {
         return joueur;
     }
 
-    public List afficherAutresJoueurs(long partieId) {
+    public List afficherInfosSurLesJoueursPourUnePartie(long partieId) {
 
         List joueurs = dao.recupererAutresJoueures(partieId);
 

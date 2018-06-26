@@ -116,7 +116,8 @@ public class PointEntree {
             System.out.println("-------------");
             System.out.println("1. Lister les parties non-démarées");
             System.out.println("2. Créer une partie");
-            System.out.println("3. Rejouindre une partie");
+            System.out.println("3. Rejoindre une partie");
+            System.out.println("4. Demarrer une partie");
             System.out.println("Q. Quitter");
             System.out.print("Votre choix > ");
         
@@ -142,13 +143,24 @@ public class PointEntree {
                     String pseudo = persoScan.nextLine();
                     System.out.print("Entrez votre avatar : ");
                     String avatar = persoScan.nextLine();
+                    List<Partie> parties2 = partieService.listerPartiesNonDemarrees();
+                    for (Partie party : parties2) {
+                        System.out.println(party.getId() + " " + party.getNom());
+                    }
                     System.out.print("Entrez le num de votre partie : ");
                     Long partieId = persoScan.nextLong();
                     Joueur nouveauJoueur = joueurService.rejoindrePartie(pseudo, avatar, partieId);
                     // pour un joueur par fenêtre !
                     ecranJeu(partieId, nouveauJoueur.getId());
                     break;
-
+                
+                case "4":
+                    Scanner s = new Scanner(System.in);
+                    System.out.print("Entre le num de la partie à démarrer ");
+                    Long choix2 = s.nextLong();
+                    partieService.demarrerPartie(choix2);
+                    break;
+                    
                 case "Q":
                     break;
 
@@ -165,43 +177,19 @@ public class PointEntree {
         //recupe id de moi-même
         long monId = idJoueur;
 
-        List<Joueur> joueurs = joueurService.tousLesJoueursDeLaPartie(partieId);
         Joueur joueurGagnant = null;
         long joueurQuiALaMainId = 0;
         
-        while (joueurQuiALaMainId == 0) {
-            
-            //condition dans la boucle : boucle tant que partie pas démarrée (aucun joueur à l'état à la main)
-            for (Joueur joueur : joueurs) {
-                if (joueur.getEtat()== Joueur.EtatJoueur.A_LA_MAIN) {
-                    joueurQuiALaMainId = joueur.getId();
-                }
-            }
-            
-            //Menu pour démarrer la partie si plus d'un joueur
-            if (joueurs.size() == 0) {
-                System.err.println("Il n'y a pas assez de joueurs pour rejoindre la partie !");
-            } else {
-                Scanner s = new Scanner(System.in);
-                System.out.print("Entre O pour démmarer la partie");
-                String choix2 = s.nextLine();
-                switch (choix2) {
-                    case "O":
-                        partieService.demarrerPartie(partieId);
-                        break;
-                    default:
-                        System.out.println("Raté !");
-                        break;
-                }
-            }
-        }
-
+        //TODO : Condition pour commencer la partie. A faire ???
+        
+        System.out.println("La partie va démarrer");
                 
         //Tours de jeux tant qu'il n'y a pas de joueur gagants
         while (joueurGagnant == null) {            
             if (joueurQuiALaMainId == monId) {
                 joueurGagnant = jeu(partieId);
             } else {
+                System.err.println("Ce n'est pas votre tour!");
                 Thread.sleep(1000);
             }
         }
@@ -211,5 +199,4 @@ public class PointEntree {
         System.err.println("La reine des sorcières est " + joueurGagnant.getPseudo() + " !!!!!!");
         
     }
-    
 }
